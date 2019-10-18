@@ -182,6 +182,8 @@
   <ItemGroup>
     <None Include="builds\content\shaders\basic.frag" />
     <None Include="builds\content\shaders\basic.vert" />
+    <None Include="builds\content\shaders\basic_lit.frag" />
+    <None Include="builds\content\shaders\basic_lit.vert" />
     <None Include="builds\content\shaders\texture.frag" />
     <None Include="builds\content\shaders\texture.vert" />
   </ItemGroup>
