@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="source\core">
+      <UniqueIdentifier>{3a81fc03-2e1d-4d3d-af7f-45aee0946a81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{4d3598e6-9d0f-4ccf-bb6e-1169eb39c777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\engine">
+      <UniqueIdentifier>{b7e2ce93-9607-409a-b922-82b542ba829a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\engine\input">
+      <UniqueIdentifier>{2f5153ce-60f6-4aaa-af4c-633303f8832d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\engine\renderer">
+      <UniqueIdentifier>{ad6639c8-82e7-4e7b-91fe-f8ad4101b5de}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\glad\src\glad.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="core\assert.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\filesystem.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\heap.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\json.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\memory.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\name.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\random.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\string.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\timer.cpp">
+      <Filter>source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\program.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\input_system.cpp">
+      <Filter>source\engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\renderer.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\vertex_array.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\vertex_index_array.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\texture.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\assert.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\filesystem.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\handle.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\heap.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\json.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\memory.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\name.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\pool_allocator.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\random.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ref_count.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ref_ptr.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\reflection.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\smart_ptr.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\string.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\timer.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\types.h">
+      <Filter>source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\program.h">
+      <Filter>source\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\input_system.h">
+      <Filter>source\engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engine.h">
+      <Filter>source\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\renderer.h">
+      <Filter>source\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\vertex_array.h">
+      <Filter>source\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\vertex_index_array.h">
+      <Filter>source\engine\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\texture.h">
+      <Filter>source\engine\renderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="builds\content\shaders\basic.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\basic.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\texture.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\texture.vert">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
