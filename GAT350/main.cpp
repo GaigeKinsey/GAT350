@@ -75,8 +75,8 @@ int main(int argc, char** argv) {
 
 	Material material;
 	material.program = new Program();
-	material.program->CompileShaderFromFile("shaders/gouraud.vert", GL_VERTEX_SHADER);
-	material.program->CompileShaderFromFile("shaders/gouraud.frag", GL_FRAGMENT_SHADER);
+	material.program->CompileShaderFromFile("shaders/phong.vert", GL_VERTEX_SHADER);
+	material.program->CompileShaderFromFile("shaders/phong.frag", GL_FRAGMENT_SHADER);
 	material.program->Link();
 	material.program->Use();
 
@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
 		glm::mat4 mvp_matrix = mxProjection * model_view_matrix;
 		material.program->SetUniform("mvp_matrix", mvp_matrix);
 
+		//transform light shader
 		light.SetShader(material.program, mxView);
 
 		renderer->ClearBuffer();

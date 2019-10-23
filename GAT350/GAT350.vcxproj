@@ -190,6 +190,8 @@
     <None Include="builds\content\shaders\basic_lit.vert" />
     <None Include="builds\content\shaders\gouraud.frag" />
     <None Include="builds\content\shaders\gouraud.vert" />
+    <None Include="builds\content\shaders\phong.frag" />
+    <None Include="builds\content\shaders\phong.vert" />
     <None Include="builds\content\shaders\texture.frag" />
     <None Include="builds\content\shaders\texture.vert" />
   </ItemGroup>
