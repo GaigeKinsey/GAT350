@@ -20,6 +20,9 @@
     <Filter Include="source\engine\renderer">
       <UniqueIdentifier>{ad6639c8-82e7-4e7b-91fe-f8ad4101b5de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\engine\math">
+      <UniqueIdentifier>{6215b030-02dc-4eb4-b36d-e0f70ef15665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -79,8 +82,11 @@
     <ClCompile Include="engine\renderer\material.cpp">
       <Filter>source\engine\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="engine\math\math.cpp">
+      <Filter>source\engine\math</Filter>
+    </ClCompile>
     <ClCompile Include="engine\renderer\mesh.cpp">
-      <Filter>source</Filter>
+      <Filter>source\engine\renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +171,9 @@
     <ClInclude Include="engine\renderer\mesh.h">
       <Filter>source\engine\renderer</Filter>
     </ClInclude>
+    <ClInclude Include="engine\math\math.h">
+      <Filter>source\engine\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="builds\content\shaders\basic.frag">
@@ -195,6 +204,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="builds\content\shaders\phong.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\texture_phong.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\texture_phong.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

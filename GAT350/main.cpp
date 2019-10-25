@@ -8,6 +8,7 @@
 #include "engine/renderer/material.h"
 #include "engine/renderer/light.h"
 #include "engine/renderer/mesh.h"
+#include "engine/math/math.h"
 
 int main(int argc, char** argv) {
 	filesystem::set_current_path("content");
@@ -23,12 +24,24 @@ int main(int argc, char** argv) {
 	std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 	renderer->Initialize(800, 600);
 
-
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> texcoords;
 	
-	Mesh::Load("meshes/plane.obj", positions, normals, texcoords);
+	Mesh::Load("meshes/ogre.obj", positions, normals, texcoords);
+
+	if (normals.empty()) {
+		for (size_t i = 0; i < positions.size() - 2; i+=3) {
+			glm::vec3 normal = math::calculate_normal(positions[i], positions[i + 1], positions[i + 2]);
+			normals.push_back(normal);
+			normals.push_back(normal);
+			normals.push_back(normal);
+		}
+	}
+
+	//glm::mat3 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//math::transform(positions, rotate);
+	//math::transform(normals, rotate);
 
 	VertexArray vertex_array;
 	if (!positions.empty()) {
@@ -57,15 +70,19 @@ int main(int argc, char** argv) {
 
 	Material material;
 	material.program = new Program();
-	material.program->CompileShaderFromFile("shaders/phong.vert", GL_VERTEX_SHADER);
-	material.program->CompileShaderFromFile("shaders/phong.frag", GL_FRAGMENT_SHADER);
+	material.program->CompileShaderFromFile("shaders/texture_phong.vert", GL_VERTEX_SHADER);
+	material.program->CompileShaderFromFile("shaders/texture_phong.frag", GL_FRAGMENT_SHADER);
 	material.program->Link();
 	material.program->Use();
 
 	material.ambient = glm::vec3(1.0f);
-	material.diffuse = glm::vec3(0.2f, 0.2f, 1.0f);
+	material.diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
 	material.specular = glm::vec3(1.0f);
 	material.shininess = 32.0f;
+
+	Texture* texture = new Texture();
+	texture->CreateTexture("textures/ogre_diffuse.bmp");
+	material.textures.push_back(texture);
 
 	material.Update();
 	material.Use();
