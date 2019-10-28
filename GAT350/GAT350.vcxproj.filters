@@ -23,12 +23,12 @@
     <Filter Include="source\engine\math">
       <UniqueIdentifier>{6215b030-02dc-4eb4-b36d-e0f70ef15665}</UniqueIdentifier>
     </Filter>
+    <Filter Include="external">
+      <UniqueIdentifier>{6ce5cb78-c3c8-49c3-80a0-0ce499a3f7ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\glad\src\glad.c">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="core\assert.cpp">
@@ -86,6 +86,27 @@
       <Filter>source\engine\math</Filter>
     </ClCompile>
     <ClCompile Include="engine\renderer\mesh.cpp">
+      <Filter>source\engine\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\glad\src\glad.c">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\examples\imgui_impl_opengl3.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\examples\imgui_impl_sdl.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\renderer\gui.cpp">
       <Filter>source\engine\renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="engine\math\math.h">
       <Filter>source\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\renderer\gui.h">
+      <Filter>source\engine\renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,18 +3,20 @@
 #include "texture.h"
 #include "program.h"
 
-struct Material
+class Material
 {
+public:
 	void Destroy();
 
-	void Update();
+	void SetShader(Program* shader);
+	void Edit();
 	void Use();
 
+public:
 	glm::vec3 ambient = glm::vec3(0.0f);
 	glm::vec3 diffuse = glm::vec3(1.0f);
 	glm::vec3 specular = glm::vec3(1.0f);
 	float shininess = 100.0f;
 	
-	Program* program;
 	std::vector<Texture*> textures;
 };
