@@ -2,6 +2,7 @@
 	
 in vec3 fposition;
 in vec3 fnormal;
+in vec2 ftexcoord;
 
 out vec4 color;
 	
@@ -25,6 +26,17 @@ struct light_s
 
 uniform light_s light;
 
+struct fog_s
+{
+	float min_distance;
+	float max_distance;
+	vec3 color;
+};
+
+uniform fog_s fog;
+
+layout (binding = 0) uniform sampler2D texture_sample;
+
 void main()
 {
 	vec3 position_to_light = normalize(vec3(light.position) - fposition);
@@ -47,5 +59,10 @@ void main()
 		specular = light.specular * material.specular * intensity;
 	}
 
-	color = vec4(ambient + diffuse + specular, 1.0);
+	vec4 phong_color = vec4(ambient + diffuse, 1.0f) * texture(texture_sample, ftexcoord) + vec4(specular, 1.0f);
+	float distance = abs(fposition.z);
+	float fog_intensity = (distance - fog.min_distance) / (fog.max_distance - fog.min_distance);
+	fog_intensity = clamp(fog_intensity, 0.0, 1.0);
+
+	color = mix(phong_color, vec4(fog.color, 1.0f), fog_intensity);
 }

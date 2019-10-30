@@ -236,5 +236,11 @@
     <None Include="builds\content\shaders\texture_phong.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="builds\content\shaders\toon.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="builds\content\shaders\texture_phong_fog.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
