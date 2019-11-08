@@ -1,17 +1,7 @@
 #include "material.h"
 
-void Material::Destroy()
-{
-	for (Texture* texture : textures)
-	{
-		delete texture;
-	}
-}
-
 void Material::SetShader(Program* shader)
 {
-	shader->Use();
-
 	shader->SetUniform("material.ambient", ambient);
 	shader->SetUniform("material.diffuse", diffuse);
 	shader->SetUniform("material.specular", specular);
@@ -20,7 +10,7 @@ void Material::SetShader(Program* shader)
 
 void Material::Use()
 {
-	for (Texture* texture : textures)
+	for (auto texture : textures)
 	{
 		texture->Bind();
 	}

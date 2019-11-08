@@ -2,10 +2,10 @@
 
 #include "../engine.h"
 
-class Renderer
+class Renderer : public System
 {
 public:
-	Renderer() {}
+	OBJECT_DECLARATION(Renderer, System)
 	~Renderer() {}
 
 	bool Initialize(u32 width, u32 height, bool fullscreen = false);

@@ -8,14 +8,16 @@
 #include <map>
 #include <vector>
 
-class Program
+#include "../framework/resource.h"
+
+class Program : public Resource
 {
 public:
-	Program() {}
+	OBJECT_DECLARATION(Program, Resource)
 	~Program();
 
 public:
-	void CompileShaderFromFile(const std::string& filename, GLenum shader_type);
+	void CreateShaderFromFile(const std::string& filename, GLenum shader_type);
 	void CreateShaderFromSource(const std::string& source, GLenum shader_type);
 
 	void Link();

@@ -20,6 +20,6 @@ void Light::Edit()
 	ImGui::ColorEdit3("Ambient", (float*)&ambient);
 	ImGui::ColorEdit3("Diffuse", (float*)&diffuse);
 	ImGui::ColorEdit3("Specular", (float*)&specular);
-	ImGui::SliderFloat4("Position", (float*)&m_transform.translation, -100, 100);
+	ImGui::SliderFloat3("Position", (float*)&m_transform.translation, -100, 100);
 	ImGui::PopID();
 }

@@ -34,7 +34,7 @@ vec3 toon(vec3 position, vec3 normal)
 
 	//diffuse
 	float lDotN = max(0.0, dot(fnormal, position_to_light));
-	vec3 diffuse = (material.diffuse * light.diffuse) * floor(lDotN * steps);
+	vec3 diffuse = (material.diffuse * light.diffuse) * floor(lDotN * steps) * scale;
 
 	return diffuse;
 }
