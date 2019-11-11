@@ -1,5 +1,10 @@
 #include "renderer.h"
 
+bool Renderer::Initialize()
+{
+	return Initialize(1280, 720, false);
+}
+
 bool Renderer::Initialize(u32 width, u32 height, bool fullscreen)
 {
 	Uint32 flags = SDL_WINDOW_OPENGL;
@@ -37,6 +42,11 @@ void Renderer::Shutdown()
 {
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);
+}
+
+void Renderer::Update()
+{
+
 }
 
 void Renderer::ClearBuffer()

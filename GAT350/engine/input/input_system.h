@@ -5,7 +5,8 @@
 class InputSystem : public System
 {
 public:
-	InputSystem() {}
+	OBJECT_DECLARATION(InputSystem, System)
+
 	~InputSystem() {}
 
 	bool Initialize();

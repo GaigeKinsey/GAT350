@@ -6,10 +6,13 @@ class Renderer : public System
 {
 public:
 	OBJECT_DECLARATION(Renderer, System)
+
 	~Renderer() {}
 
+	bool Initialize();
 	bool Initialize(u32 width, u32 height, bool fullscreen = false);
 	void Shutdown();
+	void Update();
 
 	void ClearBuffer();
 	void SwapBuffer();
@@ -19,5 +22,5 @@ public:
 
 private:
 	SDL_Window* m_window = nullptr;
-	SDL_GLContext m_context;
+	SDL_GLContext m_context = nullptr;
 };

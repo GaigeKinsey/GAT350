@@ -7,9 +7,9 @@
 #include "renderer/material.h"
 #include "renderer/light.h"
 #include "renderer/mesh.h"
-//#include "renderer/model.h"
+#include "renderer/model.h"
 #include "renderer/gui.h"
-//#include "renderer/camera.h"
+#include "renderer/camera.h"
 
 bool Engine::Initialize()
 {

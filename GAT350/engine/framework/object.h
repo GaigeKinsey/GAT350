@@ -16,13 +16,10 @@ public:
 	virtual ~Object() {}
 
 	virtual bool Create(const Name& name) { m_name = name; return true; }
-
-	void SetName(const Name& name) { m_name = name; }
-	Name& GetName() { return m_name; }
 	 
 	inline virtual void Edit() { ImGui::Text(m_name.c_str()); }
 
-protected:
+public:
 	Name m_name;
 	class Engine* m_engine = nullptr;
 };

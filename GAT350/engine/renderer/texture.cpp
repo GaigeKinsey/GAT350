@@ -7,6 +7,13 @@ Texture::~Texture()
 	//delete m_texture;
 }
 
+bool Texture::Create(const Name& name)
+{
+	CreateTexture(name.c_str());
+
+	return true;
+}
+
 void Texture::CreateTexture(const std::string& filename, GLenum type, GLuint unit)
 {
 	m_type = type;
