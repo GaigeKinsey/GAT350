@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "input/input_system.h"
+#include "input/input.h"
 #include "renderer/renderer.h"
 #include "renderer/program.h"
 #include "renderer/vertex_index_array.h"
@@ -25,7 +25,7 @@ bool Engine::Initialize()
 	}
 
 	// systems
-	std::unique_ptr<InputSystem> input = std::make_unique<InputSystem>(InputSystem::GetClassName(), this);
+	std::unique_ptr<Input> input = std::make_unique<Input>(Input::GetClassName(), this);
 	input->Initialize();
 	m_systems.push_back(std::move(input));
 
