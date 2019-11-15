@@ -14,6 +14,7 @@ public:
 
 public:
 	OBJECT_DECLARATION(Light, Actor)
+
 	virtual ~Light() {}
 
 	virtual bool Create(const Name& name) override;
