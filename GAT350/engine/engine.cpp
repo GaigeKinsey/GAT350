@@ -10,6 +10,7 @@
 #include "renderer/model.h"
 #include "renderer/gui.h"
 #include "renderer/camera.h"
+#include "editor/editor.h"
 
 bool Engine::Initialize()
 {
@@ -32,6 +33,10 @@ bool Engine::Initialize()
 	std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>(Renderer::GetClassName(), this);
 	renderer->Initialize(1280, 720);
 	m_systems.push_back(std::move(renderer));
+
+	std::unique_ptr<Editor> editor = std::make_unique<Editor>(Editor::GetClassName(), this);
+	editor->Initialize();
+	m_systems.push_back(std::move(editor));
 
 	GUI::Initialize(Get<Renderer>());
 

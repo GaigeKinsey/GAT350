@@ -35,6 +35,9 @@
     <Filter Include="source\game">
       <UniqueIdentifier>{817aad37-f0fe-4d1c-9974-afa57997ebcc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\engine\editor">
+      <UniqueIdentifier>{45d8581b-c7eb-459d-8866-6b470b544df5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\assert.cpp">
@@ -118,9 +121,6 @@
     <ClCompile Include="game\main.cpp">
       <Filter>source\game</Filter>
     </ClCompile>
-    <ClCompile Include="game\game_scene.cpp">
-      <Filter>source\game</Filter>
-    </ClCompile>
     <ClCompile Include="engine\engine.cpp">
       <Filter>source\engine</Filter>
     </ClCompile>
@@ -135,6 +135,15 @@
     </ClCompile>
     <ClCompile Include="engine\input\input.cpp">
       <Filter>source\engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="game\light_scene.cpp">
+      <Filter>source\game</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\editor\editor.cpp">
+      <Filter>source\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imGuIZMO.quat\imGuIZMOquat.cpp">
+      <Filter>external</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,9 +258,6 @@
     <ClInclude Include="engine\def.h">
       <Filter>source\engine</Filter>
     </ClInclude>
-    <ClInclude Include="game\game_scene.h">
-      <Filter>source\game</Filter>
-    </ClInclude>
     <ClInclude Include="engine\renderer\camera.h">
       <Filter>source\engine\renderer</Filter>
     </ClInclude>
@@ -260,6 +266,12 @@
     </ClInclude>
     <ClInclude Include="engine\input\input.h">
       <Filter>source\engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="game\light_scene.h">
+      <Filter>source\game</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\editor\editor.h">
+      <Filter>source\engine\editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

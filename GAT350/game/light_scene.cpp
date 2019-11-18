@@ -1,4 +1,4 @@
-#include "game_scene.h"
+#include "light_scene.h"
 #include "../engine/engine.h"
 #include "../engine/renderer/renderer.h"
 #include "../engine/renderer/program.h"
@@ -9,8 +9,9 @@
 #include "../engine/renderer/model.h"
 #include "../engine/renderer/camera.h"
 #include "../engine/renderer/gui.h"
+#include "../engine/editor/editor.h"
 
-bool GameScene::Create(const Name& name)
+bool LightScene::Create(const Name& name)
 {
 	// shader
 	auto shader = m_engine->Factory()->Create<Program>(Program::GetClassName());
@@ -115,7 +116,7 @@ bool GameScene::Create(const Name& name)
 	return true;
 }
 
-void GameScene::Update()
+void LightScene::Update()
 {
 	Scene::Update();
 
@@ -145,7 +146,8 @@ void GameScene::Update()
 	// gui
 	GUI::Update(m_engine->GetEvent());
 	GUI::Begin(m_engine->Get<Renderer>());
-	light->Edit();
+	m_engine->Get<Editor>()->UpdateGUI();
+	//light->Edit();
 	//ImGui::SliderFloat3("scale", glm::value_ptr(m_scale), -10, 10);
 	//ImGui::SliderFloat2("uv_scale", glm::value_ptr(m_uv_scale), -10, 10);
 	//ImGui::SliderFloat2("uv_offset", glm::value_ptr(m_uv_offset), -10, 10);
@@ -156,7 +158,7 @@ void GameScene::Update()
 	GUI::End();
 }
 
-void GameScene::Draw()
+void LightScene::Draw()
 {
 	m_engine->Get<Renderer>()->ClearBuffer();
 
