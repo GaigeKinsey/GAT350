@@ -1,4 +1,4 @@
-#include "light_scene.h"
+#include "bump_scene.h"
 #include "../engine/engine.h"
 #include "../engine/renderer/renderer.h"
 #include "../engine/renderer/program.h"
@@ -11,7 +11,7 @@
 #include "../engine/renderer/gui.h"
 #include "../engine/editor/editor.h"
 
-bool LightScene::Create(const Name& name)
+bool BumpScene::Create(const Name& name)
 {
 	// shader
 	{
@@ -19,7 +19,7 @@ bool LightScene::Create(const Name& name)
 		shader->m_name = "shader";
 		shader->m_engine = m_engine;
 		shader->CreateShaderFromFile("shaders/texture_phong.vert", GL_VERTEX_SHADER);
-		shader->CreateShaderFromFile("shaders/texture_phong_light.frag", GL_FRAGMENT_SHADER);
+		shader->CreateShaderFromFile("shaders/texture_phong_normal.frag", GL_FRAGMENT_SHADER);
 		shader->Link();
 		m_engine->Resources()->Add("phong_shader", std::move(shader));
 	}
@@ -50,12 +50,19 @@ bool LightScene::Create(const Name& name)
 	material->m_engine = m_engine;
 	material->ambient = glm::vec3(1.0f);
 	material->diffuse = glm::vec3(1.0f);
-	material->specular = glm::vec3(1.0f);
+	material->specular = glm::vec3(8.0f);
 	material->shininess = 128.0f;
 
 	// texture
-	auto texture = m_engine->Resources()->Get<Texture>("textures/uvgrid.jpg");
-	material->textures.push_back(texture);
+	{
+		auto texture = m_engine->Resources()->Get<Texture>("textures/rocks.jpg");
+		material->textures.push_back(texture);
+	}
+	{
+		auto texture = m_engine->Resources()->Get<Texture>("textures/rocks_normal.jpg");
+		texture->m_unit = GL_TEXTURE1;
+		material->textures.push_back(texture);
+	}
 	m_engine->Resources()->Add("material", std::move(material));
 
 	material = m_engine->Factory()->Create<Material>(Material::GetClassName());
@@ -76,7 +83,7 @@ bool LightScene::Create(const Name& name)
 	model->m_scene = this;
 	model->m_transform.translation = glm::vec3(0.0f);
 	model->m_transform.scale = glm::vec3(1);
-	model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/suzanne.obj");
+	model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/quad.obj");
 	model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
 	model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
 	Add(std::move(model));
@@ -98,10 +105,10 @@ bool LightScene::Create(const Name& name)
 	light->m_engine = m_engine;
 	light->m_scene = this;
 	light->Create("light");
-	light->m_transform.translation = glm::vec3(0.0f, 2.0f, 0.5f);
+	light->m_transform.translation = glm::vec3(0.0f, 2.0f, 1.0f);
 	light->m_transform.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1, 0, 0));
 	light->ambient = glm::vec3(0.3f);
-	light->diffuse = glm::vec3(0.8f, 0.0f, 0.6f);
+	light->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	light->specular = glm::vec3(1.0f);
 	light->cutoff = 30.0f;
 	light->exponent = 64.0f;
@@ -116,55 +123,29 @@ bool LightScene::Create(const Name& name)
 	camera->m_transform.translation = glm::vec3(0.0f, 0.0f, 5.0f);
 	camera->m_transform.rotation = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	camera->SetProjection(45.0f, 1280.0f / 720.0f, 0.01f, 100.0f);
-	
+
 	Add(std::move(camera));
 
 	return true;
 }
 
-void LightScene::Update()
+void BumpScene::Update()
 {
 	Scene::Update();
 
-	//Model* model = Get<Model>("model2");
-	//glm::quat r = glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
-	//model->m_transform.rotation = model->m_transform.rotation * r;
-	
 	// set shader uniforms
 	Light* light = Get<Light>("light");
-	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
+	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 0, 1));
 	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader").get());
-	//light->SetShader(m_engine->Resources()->Get<Program>("phong_shader_fx").get());
-
-	//m_time = m_time + g_timer.dt();
-
-	//auto shader = m_engine->Resources()->Get<Program>("phong_shader_fx").get();
-	//shader->SetUniform("scale", m_scale);
-	//shader->SetUniform("time", m_time);
-	//shader->SetUniform("amplitude", m_amplitude);
-	//shader->SetUniform("rate", m_rate);
-	//shader->SetUniform("frequency", m_frequency);
-
-	//shader->SetUniform("uv_scale", m_uv_scale);
-	//m_uv_offset.y = m_uv_offset.y + g_timer.dt();
-	//shader->SetUniform("uv_offset", m_uv_offset);
 
 	// gui
 	GUI::Update(m_engine->GetEvent());
 	GUI::Begin(m_engine->Get<Renderer>());
 	m_engine->Get<Editor>()->UpdateGUI();
-	//light->Edit();
-	//ImGui::SliderFloat3("scale", glm::value_ptr(m_scale), -10, 10);
-	//ImGui::SliderFloat2("uv_scale", glm::value_ptr(m_uv_scale), -10, 10);
-	//ImGui::SliderFloat2("uv_offset", glm::value_ptr(m_uv_offset), -10, 10);
-	//ImGui::SliderFloat("time", &m_time, 0.0f, 10.0f);
-	//ImGui::SliderFloat("amplitude", &m_amplitude, 0.0f, 10.0f);
-	//ImGui::SliderFloat("rate", &m_rate, 0.0f, 10.0f);
-	//ImGui::SliderFloat("frequency", &m_frequency, 0.0f, 10.0f);
 	GUI::End();
 }
 
-void LightScene::Draw()
+void BumpScene::Draw()
 {
 	m_engine->Get<Renderer>()->ClearBuffer();
 

@@ -35,6 +35,7 @@ struct light_s
 uniform light_s light;
 
 layout (binding = 0) uniform sampler2D texture_sample;
+layout (binding = 1) uniform sampler2D normal_sample;
 
 void phong(light_s in_light, vec3 position, vec3 normal, out vec3 ambient, out vec3 diffuse, out vec3 specular)
 {
@@ -78,19 +79,18 @@ void phong(light_s in_light, vec3 position, vec3 normal, out vec3 ambient, out v
 
 void main()
 {
-	//if (mod(gl_FragCoord.y, 4.0) > 2.0) discard;
-	//if (mod(gl_FragCoord.x, 4.0) > 2.0) discard;
+	vec3 normal = texture(normal_sample, ftexcoord).rgb;
+	normal = (normal * 2.0) - 1.0;
 
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 
-	phong(light, fposition, fnormal, ambient, diffuse, specular);
+	phong(light, fposition, normal, ambient, diffuse, specular);
 
-	vec4 phong_color = vec4(ambient + diffuse, 1.0f) * texture(texture_sample, ftexcoord) + vec4(specular, 1.0f);
-	//phong_color = vec4(1.0) - phong_color;
-	//phong_color = vec4(fnormal, 1.0);
-	//phong_color = vec4(gl_FragCoord.z);
+	color = vec4(ambient + diffuse, 1.0f) * texture(texture_sample, ftexcoord) + vec4(specular, 1.0f);
 
-	color = phong_color;
+	//vec3 texture_color = texture(texture_sample, ftexcoord).rgb;
+	//vec3 normal_color = (fnormal * 0.5) + 0.5;
+	//color = vec4(normal_color, 1.0);
 }

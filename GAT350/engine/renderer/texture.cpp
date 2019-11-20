@@ -40,7 +40,7 @@ void Texture::CreateTexture(const std::string& filename, GLenum type, GLuint uni
 
 void Texture::Bind()
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(m_unit);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
