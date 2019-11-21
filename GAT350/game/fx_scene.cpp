@@ -45,27 +45,52 @@ bool FXScene::Create(const Name& name)
 	}
 
 	// material
-	auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
-	material->m_name = "material";
-	material->m_engine = m_engine;
-	material->ambient = glm::vec3(1.0f);
-	material->diffuse = glm::vec3(1.0f);
-	material->specular = glm::vec3(1.0f);
-	material->shininess = 128.0f;
+	{
+		auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
+		material->m_name = "material";
+		material->m_engine = m_engine;
+		material->ambient = glm::vec3(1.0f);
+		material->diffuse = glm::vec3(1.0f);
+		material->specular = glm::vec3(1.0f);
+		material->shininess = 128.0f;
 
-	// texture
-	auto texture = m_engine->Resources()->Get<Texture>("textures/uvgrid.jpg");
-	material->textures.push_back(texture);
-	m_engine->Resources()->Add("material", std::move(material));
+		// texture
+		auto texture = m_engine->Resources()->Get<Texture>("textures/uvgrid.jpg");
+		material->textures.push_back(texture);
+		m_engine->Resources()->Add("material", std::move(material));
+	}
 
-	material = m_engine->Factory()->Create<Material>(Material::GetClassName());
-	material->m_name = "debug_material";
-	material->m_engine = m_engine;
-	material->ambient = glm::vec3(1.0f);
-	material->diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
-	material->specular = glm::vec3(1.0f);
-	material->shininess = 128.0f;
-	m_engine->Resources()->Add("debug_material", std::move(material));
+	{
+		auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
+		material->m_name = "fx_material";
+		material->m_engine = m_engine;
+		material->ambient = glm::vec3(1.0f);
+		material->diffuse = glm::vec3(1.0f);
+		material->specular = glm::vec3(1.0f);
+		material->shininess = 128.0f;
+		material->blend = Material::TRANSPARENT;
+
+		// texture
+		auto texture = m_engine->Resources()->Get<Texture>("textures/burst.tga");
+		material->textures.push_back(texture);
+		texture = m_engine->Resources()->Get<Texture>("textures/noise.png");
+		texture->m_unit = GL_TEXTURE1;
+		material->textures.push_back(texture);
+
+		m_engine->Resources()->Add("fx_material", std::move(material));
+	}
+
+	{
+		auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
+		material->m_name = "debug_material";
+		material->m_engine = m_engine;
+		material->ambient = glm::vec3(1.0f);
+		material->diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
+		material->specular = glm::vec3(1.0f);
+		material->shininess = 128.0f;
+
+		m_engine->Resources()->Add("debug_material", std::move(material));
+	}
 
 	// scene actors
 
@@ -75,11 +100,11 @@ bool FXScene::Create(const Name& name)
 		model->m_name = "model1";
 		model->m_engine = m_engine;
 		model->m_scene = this;
-		model->m_transform.translation = glm::vec3(0.0f);
-		model->m_transform.scale = glm::vec3(1);
-		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/suzanne.obj");
+		model->m_transform.translation = glm::vec3(0.0f, -2.0f, 0.0f);
+		model->m_transform.scale = glm::vec3(10.0f);
+		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/plane.obj");
 		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
-		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader_fx");
+		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
 		Add(std::move(model));
 	}
 
@@ -88,11 +113,11 @@ bool FXScene::Create(const Name& name)
 		model->m_name = "model2";
 		model->m_engine = m_engine;
 		model->m_scene = this;
-		model->m_transform.translation = glm::vec3(0.0f, -2.0f, 0.0f);
-		model->m_transform.scale = glm::vec3(10.0f);
-		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/plane.obj");
-		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
-		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
+		model->m_transform.translation = glm::vec3(0.0f);
+		model->m_transform.scale = glm::vec3(1);
+		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/quad.obj");
+		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("fx_material");
+		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader_fx");
 		Add(std::move(model));
 	}
 
@@ -104,7 +129,7 @@ bool FXScene::Create(const Name& name)
 	light->Create("light");
 	light->m_transform.translation = glm::vec3(0.0f, 2.0f, 0.5f);
 	light->m_transform.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1, 0, 0));
-	light->ambient = glm::vec3(0.3f);
+	light->ambient = glm::vec3(1.0f);
 	light->diffuse = glm::vec3(0.8f, 0.0f, 0.6f);
 	light->specular = glm::vec3(1.0f);
 	light->cutoff = 30.0f;
@@ -130,20 +155,26 @@ void FXScene::Update()
 {
 	Scene::Update();
 
-	//Model* model = Get<Model>("model2");
-	//glm::quat r = glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
-	//model->m_transform.rotation = model->m_transform.rotation * r;
-
 	// set shader uniforms
 	Light* light = Get<Light>("light");
 	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
-	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader").get());
-	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader_fx").get());
+
+	auto shader = m_engine->Resources()->Get<Program>("phong_shader");
+	light->SetShader(shader.get());
+
+	shader = m_engine->Resources()->Get<Program>("phong_shader_fx");
+	light->SetShader(shader.get());
+	shader->SetUniform("discard_color", m_discard_color);
+	shader->SetUniform("dissolve", m_dissolve);
 
 	// gui
 	GUI::Update(m_engine->GetEvent());
 	GUI::Begin(m_engine->Get<Renderer>());
+
+	ImGui::ColorEdit3("Discard", glm::value_ptr(m_discard_color));
+	ImGui::SliderFloat("Dissolve", &m_dissolve, 0.0f, 1.0f);
 	m_engine->Get<Editor>()->UpdateGUI();
+
 	GUI::End();
 }
 
