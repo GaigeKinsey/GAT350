@@ -169,6 +169,7 @@
     <ClCompile Include="engine\renderer\vertex_array.cpp" />
     <ClCompile Include="engine\renderer\vertex_index_array.cpp" />
     <ClCompile Include="game\bump_scene.cpp" />
+    <ClCompile Include="game\cubemap_scene.cpp" />
     <ClCompile Include="game\fx_scene.cpp" />
     <ClCompile Include="game\light_scene.cpp" />
     <ClCompile Include="game\main.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="framework\factory.h" />
     <ClInclude Include="framework\object_manager.h" />
     <ClInclude Include="game\bump_scene.h" />
+    <ClInclude Include="game\cubemap_scene.h" />
     <ClInclude Include="game\fx_scene.h" />
     <ClInclude Include="game\light_scene.h" />
     <ClInclude Include="game\multi_light_scene.h" />
@@ -231,6 +233,8 @@
     <None Include="builds\content\shaders\gouraud.vert" />
     <None Include="builds\content\shaders\phong.frag" />
     <None Include="builds\content\shaders\phong.vert" />
+    <None Include="builds\content\shaders\skybox.frag" />
+    <None Include="builds\content\shaders\skybox.vert" />
     <None Include="builds\content\shaders\texture.frag" />
     <None Include="builds\content\shaders\texture.vert" />
     <None Include="builds\content\shaders\texture_phong.frag" />

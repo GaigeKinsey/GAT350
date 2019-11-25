@@ -1,4 +1,4 @@
-#include "light_scene.h"
+#include "cubemap_scene.h"
 #include "../engine/engine.h"
 #include "../engine/renderer/renderer.h"
 #include "../engine/renderer/program.h"
@@ -11,7 +11,7 @@
 #include "../engine/renderer/gui.h"
 #include "../engine/editor/editor.h"
 
-bool LightScene::Create(const Name& name)
+bool CubemapScene::Create(const Name& name)
 {
 	// shader
 	{
@@ -28,10 +28,10 @@ bool LightScene::Create(const Name& name)
 		auto shader = m_engine->Factory()->Create<Program>(Program::GetClassName());
 		shader->m_name = "shader";
 		shader->m_engine = m_engine;
-		shader->CreateShaderFromFile("shaders/texture_phong.vert", GL_VERTEX_SHADER);
-		shader->CreateShaderFromFile("shaders/texture_phong_fx.frag", GL_FRAGMENT_SHADER);
+		shader->CreateShaderFromFile("shaders/skybox.vert", GL_VERTEX_SHADER);
+		shader->CreateShaderFromFile("shaders/skybox.frag", GL_FRAGMENT_SHADER);
 		shader->Link();
-		m_engine->Resources()->Add("phong_shader_fx", std::move(shader));
+		m_engine->Resources()->Add("skybox_shader", std::move(shader));
 	}
 
 	{
@@ -55,12 +55,20 @@ bool LightScene::Create(const Name& name)
 		material->shininess = 128.0f;
 
 		// texture
-		auto texture = m_engine->Resources()->Get<Texture>("textures/uvgrid.jpg");
-		material->textures.push_back(texture);
+		auto texture = std::make_unique<Texture>();
+
+		std::vector<std::string> suffixes = { "_posx", "_negx", "_posy", "_negy", "_posz", "_negz" };
+		std::vector<std::string> names = Texture::GenerateCubeMapNames("textures/lancellotti", suffixes,".jpg");
+		texture->CreateCubeTexture(names);
+		m_engine->Resources()->Add("cube_texture", std::move(texture));
+
+		//auto texture = m_engine->Resources()->Get<Texture>("textures/uvgrid.jpg");
+		material->textures.push_back(m_engine->Resources()->Get<Texture>("cube_texture"));
 		m_engine->Resources()->Add("material", std::move(material));
 	}
 
 	{
+		//material
 		auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
 		material->m_name = "debug_material";
 		material->m_engine = m_engine;
@@ -73,7 +81,7 @@ bool LightScene::Create(const Name& name)
 
 	// scene actors
 
-	// model
+	// models
 	{
 		auto model = m_engine->Factory()->Create<Model>(Model::GetClassName());
 		model->m_name = "model1";
@@ -81,23 +89,23 @@ bool LightScene::Create(const Name& name)
 		model->m_scene = this;
 		model->m_transform.translation = glm::vec3(0.0f);
 		model->m_transform.scale = glm::vec3(1);
-		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/suzanne.obj");
+		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/cube.obj");
 		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
-		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
+		model->m_shader = m_engine->Resources()->Get<Program>("skybox_shader");
 		Add(std::move(model));
 	}
 
 	{
-		auto model = m_engine->Factory()->Create<Model>(Model::GetClassName());
-		model->m_name = "model2";
-		model->m_engine = m_engine;
-		model->m_scene = this;
-		model->m_transform.translation = glm::vec3(0.0f, -2.0f, 0.0f);
-		model->m_transform.scale = glm::vec3(10.0f);
-		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/plane.obj");
-		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
-		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
-		Add(std::move(model));
+		//auto model = m_engine->Factory()->Create<Model>(Model::GetClassName());
+		//model->m_name = "model2";
+		//model->m_engine = m_engine;
+		//model->m_scene = this;
+		//model->m_transform.translation = glm::vec3(0.0f, -2.0f, 0.0f);
+		//model->m_transform.scale = glm::vec3(10.0f);
+		//model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/plane.obj");
+		//model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
+		//model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
+		//Add(std::move(model));
 	}
 
 	// light
@@ -130,7 +138,7 @@ bool LightScene::Create(const Name& name)
 	return true;
 }
 
-void LightScene::Update()
+void CubemapScene::Update()
 {
 	Scene::Update();
 
@@ -138,7 +146,6 @@ void LightScene::Update()
 	Light* light = Get<Light>("light");
 	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
 	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader").get());
-	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader_fx").get());
 
 	// gui
 	GUI::Update(m_engine->GetEvent());
@@ -147,7 +154,7 @@ void LightScene::Update()
 	GUI::End();
 }
 
-void LightScene::Draw()
+void CubemapScene::Draw()
 {
 	m_engine->Get<Renderer>()->ClearBuffer();
 
