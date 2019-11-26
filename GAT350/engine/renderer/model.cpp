@@ -16,6 +16,8 @@ void Model::Draw(GLenum primitiveType)
 	glm::mat4 projection_matrix = cameras[0]->m_projection_matrix;
 
 	m_shader->Use();
+	m_shader->SetUniform("camera_position", cameras[0]->m_transform.translation);
+	m_shader->SetUniform("model_matrix", m_transform.GetMatrix());
 	m_shader->SetUniform("model_view_matrix", model_view_matrix);
 	m_shader->SetUniform("mvp_matrix", mvp_matrix);
 	m_shader->SetUniform("view_matrix", view_matrix);

@@ -63,6 +63,10 @@ bool Mesh::Create(const Name& name)
 
 void Mesh::Draw(GLenum primitiveType)
 {
+	(m_flags[ENABLE_DEPTH_TEST]) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+	if (m_flags[CULL_FRONT]) glCullFace(GL_FRONT);
+	if (m_flags[CULL_BACK]) glCullFace(GL_BACK);
+
 	m_material->Use();
 	m_vertex_array.Draw(primitiveType);
 }
@@ -77,8 +81,6 @@ bool Mesh::Load(const std::string& filename, std::vector<glm::vec3>& positions, 
 	std::vector<glm::vec3> mesh_positions;
 	std::vector<glm::vec3> mesh_normals;
 	std::vector<glm::vec2> mesh_texcoords;
-
-	ms_timer stopwatch;
 
 #if 1
 	std::ifstream stream(filename, std::ios::binary);
@@ -163,8 +165,6 @@ bool Mesh::Load(const std::string& filename, std::vector<glm::vec3>& positions, 
 			}
 		}
 	}
-
-	std::cout << "time: " << stopwatch.elapsed_time() << std::endl;
 
 	stream.close();
 

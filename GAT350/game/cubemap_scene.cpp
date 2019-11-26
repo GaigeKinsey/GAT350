@@ -38,6 +38,16 @@ bool CubemapScene::Create(const Name& name)
 		auto shader = m_engine->Factory()->Create<Program>(Program::GetClassName());
 		shader->m_name = "shader";
 		shader->m_engine = m_engine;
+		shader->CreateShaderFromFile("shaders/reflection.vert", GL_VERTEX_SHADER);
+		shader->CreateShaderFromFile("shaders/reflection.frag", GL_FRAGMENT_SHADER);
+		shader->Link();
+		m_engine->Resources()->Add("reflection_shader", std::move(shader));
+	}
+
+	{
+		auto shader = m_engine->Factory()->Create<Program>(Program::GetClassName());
+		shader->m_name = "shader";
+		shader->m_engine = m_engine;
 		shader->CreateShaderFromFile("shaders/basic_color.vert", GL_VERTEX_SHADER);
 		shader->CreateShaderFromFile("shaders/basic.frag", GL_FRAGMENT_SHADER);
 		shader->Link();
@@ -57,8 +67,8 @@ bool CubemapScene::Create(const Name& name)
 		// texture
 		auto texture = std::make_unique<Texture>();
 
-		std::vector<std::string> suffixes = { "_posx", "_negx", "_posy", "_negy", "_posz", "_negz" };
-		std::vector<std::string> names = Texture::GenerateCubeMapNames("textures/lancellotti", suffixes,".jpg");
+		std::vector<std::string> suffixes = { "_ft", "_bk", "_up", "_dn", "_rt", "_lf" };
+		std::vector<std::string> names = Texture::GenerateCubeMapNames("textures/hexagon", suffixes,".tga");
 		texture->CreateCubeTexture(names);
 		m_engine->Resources()->Add("cube_texture", std::move(texture));
 
@@ -88,24 +98,25 @@ bool CubemapScene::Create(const Name& name)
 		model->m_engine = m_engine;
 		model->m_scene = this;
 		model->m_transform.translation = glm::vec3(0.0f);
-		model->m_transform.scale = glm::vec3(1);
+		model->m_transform.scale = glm::vec3(1.0f);
 		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/cube.obj");
+		model->m_mesh->m_flags = BIT(Mesh::CULL_FRONT);// | BIT(Mesh::ENABLE_DEPTH_TEST);
 		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
 		model->m_shader = m_engine->Resources()->Get<Program>("skybox_shader");
 		Add(std::move(model));
 	}
 
 	{
-		//auto model = m_engine->Factory()->Create<Model>(Model::GetClassName());
-		//model->m_name = "model2";
-		//model->m_engine = m_engine;
-		//model->m_scene = this;
-		//model->m_transform.translation = glm::vec3(0.0f, -2.0f, 0.0f);
-		//model->m_transform.scale = glm::vec3(10.0f);
-		//model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/plane.obj");
-		//model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
-		//model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
-		//Add(std::move(model));
+		auto model = m_engine->Factory()->Create<Model>(Model::GetClassName());
+		model->m_name = "model2";
+		model->m_engine = m_engine;
+		model->m_scene = this;
+		model->m_transform.translation = glm::vec3(0.0f, 0.0f, 0.0f);
+		model->m_transform.scale = glm::vec3(1.0f);
+		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/sphere.obj");
+		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
+		model->m_shader = m_engine->Resources()->Get<Program>("reflection_shader");
+		Add(std::move(model));
 	}
 
 	// light
@@ -142,10 +153,15 @@ void CubemapScene::Update()
 {
 	Scene::Update();
 
+	auto shader = (m_engine->Resources()->Get<Program>("phong_shader"));
+
 	// set shader uniforms
-	Light* light = Get<Light>("light");
-	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
-	light->SetShader(m_engine->Resources()->Get<Program>("phong_shader").get());
+	auto light = Get<Light>("light");
+	light->m_transform.translation = light->m_transform.translation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 0, 1));
+	light->SetShader(shader.get());
+
+	auto model = Get<Model>("model2");
+	model->m_transform.rotation = model->m_transform.rotation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
 
 	// gui
 	GUI::Update(m_engine->GetEvent());
