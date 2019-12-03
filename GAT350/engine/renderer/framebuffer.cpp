@@ -30,7 +30,11 @@ void Framebuffer::AttachTexture(const std::shared_ptr<Texture>& texture, GLenum 
 
 void Framebuffer::CreateDepthbuffer(u32 width, u32 height)
 {
+	glGenRenderbuffers(1, &m_depthbuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_depthbuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthbuffer);
 }
 
 void Framebuffer::Bind()

@@ -46,6 +46,22 @@ bool FrameBufferScene::Create(const Name& name)
 	}
 
 	{
+		// framebuffer
+		auto framebuffer = m_engine->Factory()->Create<Framebuffer>(Framebuffer::GetClassName());
+		framebuffer->Create("framebuffer");
+		framebuffer->CreateDepthbuffer(512, 512);
+
+		// texture
+		auto texture = m_engine->Factory()->Create<Texture>(Texture::GetClassName());
+		texture->CreateTexture(512, 512);
+		m_engine->Resources()->Add("render_texture", std::move(texture));
+
+		framebuffer->AttachTexture(m_engine->Resources()->Get<Texture>("render_texture"));
+		framebuffer->Unbind();
+		m_engine->Resources()->Add("framebuffer", std::move(framebuffer));
+	}
+
+	{
 		// material
 		auto material = m_engine->Factory()->Create<Material>(Material::GetClassName());
 		material->m_name = "material";
@@ -70,22 +86,11 @@ bool FrameBufferScene::Create(const Name& name)
 		material->diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
 		material->specular = glm::vec3(1.0f);
 		material->shininess = 128.0f;
+
+		// texture
+		auto texture = m_engine->Resources()->Get<Texture>("render_texture");
+		material->textures.push_back(texture);
 		m_engine->Resources()->Add("render_material", std::move(material));
-	}
-
-	{
-		// framebuffer
-		auto framebuffer = m_engine->Factory()->Create<Framebuffer>(Framebuffer::GetClassName());
-		framebuffer->Create("framebuffer");
-		framebuffer->CreateDepthbuffer(512, 512);
-
-		auto texture = m_engine->Factory()->Create<Texture>(Texture::GetClassName());
-		texture->CreateTexture(512, 512);
-		m_engine->Resources()->Add("render_texture", std::move(texture));
-
-		framebuffer->AttachTexture(m_engine->Resources()->Get<Texture>("render_texture"));
-		framebuffer->Unbind();
-		m_engine->Resources()->Add("framebuffer", std::move(framebuffer));
 	}
 
 	{
@@ -124,7 +129,7 @@ bool FrameBufferScene::Create(const Name& name)
 		model->m_transform.translation = glm::vec3(0);
 		model->m_transform.scale = glm::vec3(1.0f);
 		model->m_mesh = m_engine->Resources()->Get<Mesh>("meshes/cube.obj");
-		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("material");
+		model->m_mesh->m_material = m_engine->Resources()->Get<Material>("render_material");
 		model->m_shader = m_engine->Resources()->Get<Program>("phong_shader");
 		Add(std::move(model));
 	}
@@ -137,24 +142,39 @@ bool FrameBufferScene::Create(const Name& name)
 	light->Create("light");
 	light->m_transform.translation = glm::vec3(2);
 	light->m_transform.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1, 0, 0));
-	light->ambient = glm::vec3(0);
+	light->ambient = glm::vec3(0.5f);
 	light->diffuse = glm::vec3(1);
 	light->specular = glm::vec3(1.0f);
 	light->cutoff = 30.0f;
-	light->exponent = 64.0f;
+	light->exponent = 8.0f;
 	Add(std::move(light));
 
-	// camera
-	auto camera = m_engine->Factory()->Create<Camera>(Camera::GetClassName());
-	camera->m_name = "camera";
-	camera->m_engine = m_engine;
-	camera->m_scene = this;
-	camera->Create("camera");
-	camera->m_transform.translation = glm::vec3(0.0f, 0.0f, 5.0f);
-	camera->m_transform.rotation = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	camera->SetProjection(45.0f, 1280.0f / 720.0f, 0.01f, 100.0f);
+	// cameras
+	{
+		auto camera = m_engine->Factory()->Create<Camera>(Camera::GetClassName());
+		camera->m_name = "camera";
+		camera->m_engine = m_engine;
+		camera->m_scene = this;
+		camera->Create("camera");
+		camera->m_transform.translation = glm::vec3(0.0f, 0.0f, 5.0f);
+		camera->m_transform.rotation = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		camera->SetProjection(45.0f, 1280.0f / 720.0f, 0.01f, 100.0f);
+		camera->m_user_camera = true;
 
-	Add(std::move(camera));
+		Add(std::move(camera));
+	}
+
+	{
+		auto camera = m_engine->Factory()->Create<Camera>(Camera::GetClassName());
+		camera->m_name = "buffer_camera";
+		camera->m_engine = m_engine;
+		camera->m_scene = this;
+		camera->m_transform.translation = glm::vec3(0.0f, 0.0f, 5.0f);
+		camera->m_transform.rotation = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		camera->SetProjection(45.0f, 1.0f, 0.01f, 100.0f);
+
+		Add(std::move(camera));
+	}
 
 	return true;
 }
@@ -162,6 +182,16 @@ bool FrameBufferScene::Create(const Name& name)
 void FrameBufferScene::Update()
 {
 	Scene::Update();
+
+	{
+		auto model = Get<Model>("model1");
+		model->m_transform.rotation = model->m_transform.rotation * glm::angleAxis(glm::radians(-45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
+	}
+
+	{
+		auto model = Get<Model>("model2");
+		model->m_transform.rotation = model->m_transform.rotation * glm::angleAxis(glm::radians(45.0f) * g_timer.dt(), glm::vec3(0, 1, 0));
+	}
 
 	// set shader uniforms
 	Light* light = Get<Light>("light");
@@ -177,10 +207,34 @@ void FrameBufferScene::Update()
 
 void FrameBufferScene::Draw()
 {
+	RenderToTexture();
+	RenderScene();
+
+	GUI::Draw();
+	m_engine->Get<Renderer>()->SwapBuffer();
+}
+
+void FrameBufferScene::RenderToTexture()
+{
+	auto framebuffer = m_engine->Resources()->Get<Framebuffer>("framebuffer");
+	framebuffer->Bind();
+
+	SetActive("buffer_camera");
+	m_engine->Get<Renderer>()->SetViewport(0, 0, 512, 512);
 	m_engine->Get<Renderer>()->ClearBuffer();
 
-	Scene::Draw();
-	GUI::Draw();
+	auto model = Get<Model>("model1");
+	model->Draw();
 
-	m_engine->Get<Renderer>()->SwapBuffer();
+	framebuffer->Unbind();
+}
+
+void FrameBufferScene::RenderScene()
+{
+	SetActive("camera");
+	m_engine->Get<Renderer>()->RestoreViewport();
+	m_engine->Get<Renderer>()->ClearBuffer();
+
+	auto model = Get<Model>("model2");
+	model->Draw();
 }
