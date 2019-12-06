@@ -5,7 +5,7 @@ class Scene : public Object
 {
 public:
 	OBJECT_DECLARATION(Scene, Object)
-	virtual ~Scene() {}
+		virtual ~Scene() {}
 
 	virtual void Update();
 	virtual void Draw();
@@ -34,7 +34,7 @@ public:
 	{
 		for (auto& actor : m_actors)
 		{
-			if (actor->m_active)
+			if (actor->m_active && dynamic_cast<T*>(actor.get()))
 			{
 				return dynamic_cast<T*>(actor.get());
 			}
@@ -43,11 +43,15 @@ public:
 		return nullptr;
 	}
 
+	template<typename T>
 	void SetActive(const Name& name)
 	{
 		for (auto& actor : m_actors)
 		{
-			actor->m_active = (actor->m_name == name);
+			if (dynamic_cast<T*>(actor.get()))
+			{
+				actor->m_active = (actor->m_name == name);
+			}
 		}
 	}
 

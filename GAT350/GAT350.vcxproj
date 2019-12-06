@@ -176,6 +176,7 @@
     <ClCompile Include="game\light_scene.cpp" />
     <ClCompile Include="game\main.cpp" />
     <ClCompile Include="game\multi_light_scene.cpp" />
+    <ClCompile Include="game\shadowmap_scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\assert.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="game\fx_scene.h" />
     <ClInclude Include="game\light_scene.h" />
     <ClInclude Include="game\multi_light_scene.h" />
+    <ClInclude Include="game\shadowmap_scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="builds\content\shaders\basic.frag" />
@@ -233,6 +235,8 @@
     <None Include="builds\content\shaders\basic_color.vert" />
     <None Include="builds\content\shaders\basic_lit.frag" />
     <None Include="builds\content\shaders\basic_lit.vert" />
+    <None Include="builds\content\shaders\depth_debug.frag" />
+    <None Include="builds\content\shaders\depth_debug.vert" />
     <None Include="builds\content\shaders\gouraud.frag" />
     <None Include="builds\content\shaders\gouraud.vert" />
     <None Include="builds\content\shaders\phong.frag" />
